@@ -1,0 +1,109 @@
+openapi: "3.0.2"
+info:
+  title: API Authentication
+  version: "1.0"
+
+paths:
+  /secured/v1/secure-example:
+    get:
+      tags:
+        - SecuredExample
+      summary: Sample endpoint for representing a secured endpoint
+      operationId: getSampleSecuredMessage
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+
+  /unsecured/v1/unsecure-example:
+    get:
+      tags:
+        - UnsecuredExample
+      summary: Sample endpoint for representing an unsecured endpoint
+      operationId: getSampleMessage
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+
+components:
+  schemas:
+    BaseResponse:
+      type: object
+      description: Base response
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+
+    AuthenticationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    AuthenticationResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            accessToken:
+              type: string
+            refreshToken:
+              type: string
+            username:
+              type: string
+            profilePicsUrl:
+              type: string
+
+    RegistrationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        password:
+          type: string
+
+    RegistrationResponse:
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          additionalProperties: true
+          properties:
+            errorList:
+              type: array
+              items:
+                $ref: '#/components/schemas/ErrorModel'
+
+    ChangePasswordRequest:
+      type: object
+      properties:
+        currentPassword:
+          type: string
+        newPassword:
+          type: string
+        confirmationPassword:
+          type: string
+
+    ErrorModel:
+      type: object
+      properties:
+        fieldName:
+          type: string
+        error:
+          type: string
